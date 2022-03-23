@@ -18,11 +18,6 @@ CREATE TABLE tab_awards_information
     year            varchar(255) null
 );
 
-INSERT INTO tab_awards_information (id, additional_info, category, nominee, won, year)
-VALUES (1, 'A', 'Best Picture', 'Avatar', 'NO', '2009');
-INSERT INTO tab_awards_information (id, additional_info, category, nominee, won, year)
-VALUES (2, 'B', 'Best Actor', 'Dyadya Vasya', 'YES', '2007');
-
 CREATE TABLE tab_user_movie
 (
     id          int          not null primary key unique,

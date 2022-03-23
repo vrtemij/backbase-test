@@ -7,14 +7,14 @@ import com.backbase.movieapp.user.model.UserEntity;
 import com.backbase.movieapp.user.model.UserRole;
 import com.backbase.movieapp.user.repository.UserRepository;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class DatabaseInitialization implements CommandLineRunner {
+public class DatabaseInitialization {
 
   private final UserRepository userRepository;
 
@@ -34,8 +34,8 @@ public class DatabaseInitialization implements CommandLineRunner {
     this.moviesAwardsInformationRepository = moviesAwardsInformationRepository;
   }
 
-  @Override
-  public void run(String... args) {
+  @PostConstruct
+  public void init() {
     initializeUsers();
     loadAwardsFromCsv();
   }

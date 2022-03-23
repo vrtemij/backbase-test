@@ -1,5 +1,6 @@
 package com.backbase.movieapp.user.domain;
 
+import com.backbase.movieapp.movies.model.MovieIsWinnerEnum;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -26,6 +27,8 @@ public class UserMovie {
 
   @NotBlank
   private String title;
+
+  private MovieIsWinnerEnum isWinner;
 
   private Long boxOffice;
 

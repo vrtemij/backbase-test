@@ -36,9 +36,7 @@ public class MovieAwardInformationEntity {
   @Column(name = "additional_info", columnDefinition = "text")
   private String additionalInfo;
 
-  //TODO: enum
-  @Column(name = "won")
+  @Column(name = "won", columnDefinition = "text")
   private String won;
-
 
 }
