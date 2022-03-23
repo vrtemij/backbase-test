@@ -26,15 +26,10 @@ public class MoviesController {
   }
 
   @GetMapping("/best-picture/{name}")
-  public ResponseEntity<?> wonBestPicture(@PathVariable("name") String name) {
-    try {
-      OpenMovie openMovie = remoteService.findMovieByName(name);
-      boolean isWinner = moviesAwardService.checkIsBestPicture(openMovie.getTitle());
-      return ResponseEntity.ok(isWinner);
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    } catch (MovieNotFoundException e) {
-      return ResponseEntity.notFound().build();
-    }
+  public ResponseEntity<?> wonBestPicture(@PathVariable("name") String name)
+      throws MovieNotFoundException {
+    OpenMovie openMovie = remoteService.findMovieByName(name);
+    boolean isWinner = moviesAwardService.checkIsBestPicture(openMovie.getTitle());
+    return ResponseEntity.ok(isWinner);
   }
 }

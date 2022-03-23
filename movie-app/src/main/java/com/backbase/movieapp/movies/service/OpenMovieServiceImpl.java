@@ -3,6 +3,7 @@ package com.backbase.movieapp.movies.service;
 import com.backbase.movieapp.movies.domain.OpenMovie;
 import com.backbase.movieapp.movies.exception.MovieNotFoundException;
 import com.backbase.movieapp.remoteService.RestTemplateFactory;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,9 @@ public class OpenMovieServiceImpl implements OpenMovieService {
     this.restTemplateFactory = restTemplateFactory;
   }
 
+  @SneakyThrows
   @Override
-  public OpenMovie findMovieByName(String name) throws MovieNotFoundException, IllegalArgumentException {
+  public OpenMovie findMovieByName(String name){
     if (name.isBlank()) {
       throw new IllegalArgumentException("Please pass the name of the film");
     }
@@ -33,7 +35,7 @@ public class OpenMovieServiceImpl implements OpenMovieService {
     ResponseEntity<OpenMovie> responseEntity = restTemplate.getForEntity(url,
         OpenMovie.class);
     if (responseEntity.getStatusCodeValue() != 200 || responseEntity.getBody().getTitle() == null) {
-      throw new MovieNotFoundException("Movie wasn't found with name: %", name);
+      throw new MovieNotFoundException("Movie wasn't found with name: %s", name);
     }
     return responseEntity.getBody();
   }

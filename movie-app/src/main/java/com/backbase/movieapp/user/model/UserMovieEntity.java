@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +29,8 @@ public class UserMovieEntity {
   private Integer userId;
 
   @Column(name = "user_rating")
+  @Min(1)
+  @Max(10)
   private Integer rating;
 
   @Column(name = "title")
