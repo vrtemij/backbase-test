@@ -1,11 +1,13 @@
 package com.backbase.movieapp.user;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.backbase.movieapp.AbstractIntegrationTest;
 import com.backbase.movieapp.movies.domain.OpenMovie;
 import com.backbase.movieapp.user.domain.UserMovie;
+import com.backbase.movieapp.user.exception.TopTenUserMoviesNotFoundException;
+import com.backbase.movieapp.user.exception.UserMovieSavingException;
 import com.backbase.movieapp.user.model.UserMovieEntity;
 import com.backbase.movieapp.user.service.UserMovieService;
 import com.backbase.movieapp.user.service.mapper.UserMovieMapper;
@@ -14,8 +16,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -44,7 +46,7 @@ public class UserMovieIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   @SneakyThrows
-  public void givenTitleAndRating_whenMovieExists_shouldReturnSavedMovie() {
+  public void givenExistingMovie_whenSaveToLibraryWithRating_shouldReturnSavedMovie() {
     OpenMovie openMovie = buildExistingOpenMovieForRating();
 
     UserMovie expectedMovie = UserMovie.builder()
@@ -64,9 +66,26 @@ public class UserMovieIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   @SneakyThrows
-  public void givenOpenMovie_whenMovieNotExists_shouldReturnNull() {
-    UserMovie actualMovie = userMovieService.saveToLibraryWithRating(USER_ID, null, 2);
-    assertNull(actualMovie);
+  public void givenMovieNotExists_whenSaveToLibraryWithRating_shouldReturnNull() {
+    assertThrows(UserMovieSavingException.class, () -> {
+      userMovieService.saveToLibraryWithRating(USER_ID, null, 2);
+    });
+  }
+
+  @Test
+  public void givenInvalidRating_whenSaveToLibraryWithRating_shouldThrowException() {
+    OpenMovie openMovie = buildExistingOpenMovieForRating();
+    assertThrows(UserMovieSavingException.class, () -> {
+      userMovieService.saveToLibraryWithRating(1, openMovie, 1234);
+    });
+  }
+
+  @Test
+  public void givenEmptyuserMoviessLibrary_whenGetTopTenMoviesByBoxOffice_shouldThrowException() {
+    OpenMovie openMovie = buildExistingOpenMovieForRating();
+    assertThrows(TopTenUserMoviesNotFoundException.class, () -> {
+      userMovieService.getTopTenMoviesByBoxOffice(1);
+    });
   }
 
   @Test
@@ -98,6 +117,7 @@ public class UserMovieIntegrationTest extends AbstractIntegrationTest {
     List<UserMovie> actual = userMovieService.getTopTenMoviesByBoxOffice(USER_ID);
     assertEquals(expected, actual);
   }
+
 
   private UserMovieEntity buildUserMovieEntityWithRatings(String title, Long boxOffice,
       Integer rating) {
